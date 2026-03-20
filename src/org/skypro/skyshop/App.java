@@ -81,14 +81,13 @@ public class App {
     public static void demoHomework4() {
         System.out.println("=== ДОМАШКА 4 ===");
 
-        // Тест исключений
         testProductException();
 
         SearchEngine engine = new SearchEngine();
         engine.add(new Article("Молоко", "Молоко полезно"));
         engine.add(new SimpleProduct("Молоко", 100));
 
-        // Best search
+
         try {
             Searchable best = engine.findBest("Молоко");
             System.out.println("Лучший результат: " + best.getStringRepresentation());
