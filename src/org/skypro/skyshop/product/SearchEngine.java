@@ -1,5 +1,7 @@
 package org.skypro.skyshop.product;
 import org.skypro.skyshop.Searchable;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import java.util.*;
 
@@ -13,13 +15,15 @@ public class SearchEngine {
 
 
     public List<Searchable> search(String query) {
-        TreeSet<Searchable> tempResults = new TreeSet<>(new LengthComparator());
-        for (Searchable element : elements) {
-            if (element.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                tempResults.add(element);
-            }
-        }
-        return new ArrayList<>(tempResults);  // ✅ TreeSet → List!
+        Supplier<TreeSet<Searchable>> treeSetSupplier =
+                () -> new TreeSet<>(new LengthComparator());
+        return elements.stream()
+                .filter(element -> element.getSearchTerm()
+                        .toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toCollection(treeSetSupplier))
+                .descendingSet()  // TreeSet → List через descendingSet()
+                .stream()
+                .collect(Collectors.toList());
     }
 
     public TreeMap<String, Searchable> searchMap(String searchTerm) {
