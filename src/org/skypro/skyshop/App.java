@@ -26,14 +26,14 @@ public class App {
         System.out.println("=== ДОМАШКА 1 ===");
         ProductBasket basket = new ProductBasket();
 
-        // Добавление
+
         basket.add(new SimpleProduct("Хлеб", 50));
         basket.add(new SimpleProduct("Молоко", 100));
 
-        // Печать
+
         basket.print();
 
-        // Стоимость
+
         System.out.println("Стоимость: " + basket.getTotalCost());
 
         // Поиск

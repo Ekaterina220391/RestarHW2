@@ -2,6 +2,8 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class ProductBasket {
     private Map<String, List<Product>> products = new HashMap<>();
@@ -28,34 +30,34 @@ public class ProductBasket {
         products.clear();
     }
 
+    // ✅ ИСПРАВЛЕН: mapToInt + sum
     public int getTotalCost() {
-        int total = 0;
-        for (List<Product> productList : products.values()) {
-            for (Product product : productList) {
-                total += product.getPrice();
-            }
-        }
-        return total;
+        return products.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
+
+    private boolean isSpecialProduct(Product p) {
+        return p.getName().startsWith("Special") || p.getPrice() > 500;
+    }
+
+
     public void print() {
-        if (products.isEmpty()) {
-            System.out.println("в корзине пусто");
-            return;
-        }
+        products.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(product -> System.out.println(product));
 
-        for (List<Product> productList : products.values()) {
-            for (Product product : productList) {
-                System.out.println(product);
-            }
-        }
-        System.out.println("Итого: " + getTotalCost());
+        System.out.println("Special products count: " + getSpecialCount());
+    }
 
-        long specialCount = products.values().stream()
-                .flatMap(List::stream)
-                .mapToLong(p -> p.isSpecial() ? 1 : 0)
-                .sum();
-        System.out.println("Специальных товаров: " + specialCount);
+
+    private long getSpecialCount() {
+        return products.values().stream()
+                .flatMap(Collection::stream)
+                .filter(this::isSpecialProduct)
+                .count();
     }
 }
 
